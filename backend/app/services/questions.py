@@ -6,7 +6,6 @@ _PATH = os.path.join(os.path.dirname(__file__), "..", "..", "data", "questions.j
 LEVELS = {"junior": 1, "mid": 2, "senior": 3, "lead": 4}
 
 
-
 def load_questions():
     with open(_PATH) as f:
         return json.load(f)

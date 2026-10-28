@@ -24,7 +24,6 @@ def test_admin_dashboard(client):
 
 def test_admin_cannot_see_other_org(client):
     headers, _ = login(client, "asha@northwind.test", "Northwind Logistics")
-    # Asha belongs to northwind which is org 1, so org 2 must return 403 forbidden
     r = client.get("/dashboard?org_id=2", headers=headers)
     assert r.status_code == 403
 
@@ -47,7 +46,6 @@ def test_delete_my_report(client):
     assert del_res.status_code == 200
     assert del_res.json() == {"status": "deleted"}
 
-    # verify report now has 0 answers and score is None
     rep_res = client.get("/reports/me", headers=headers)
     assert rep_res.status_code == 200
     assert rep_res.json()["answered"] == 0
