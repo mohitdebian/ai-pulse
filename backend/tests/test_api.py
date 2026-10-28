@@ -40,3 +40,17 @@ def test_report_includes_score_breakdown(client):
     assert data["breakdown"][0]["score"] == 2.0
     assert data["breakdown"][1]["reason"] == "Useful summary but shared customer data."
 
+
+def test_delete_my_report(client):
+    headers, _ = login(client, "priya@northwind.test", "Northwind Logistics")
+    del_res = client.delete("/reports/me", headers=headers)
+    assert del_res.status_code == 200
+    assert del_res.json() == {"status": "deleted"}
+
+    # verify report now has 0 answers and score is None
+    rep_res = client.get("/reports/me", headers=headers)
+    assert rep_res.status_code == 200
+    assert rep_res.json()["answered"] == 0
+    assert rep_res.json()["average_score"] is None
+
+

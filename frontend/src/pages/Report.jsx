@@ -8,6 +8,13 @@ export default function Report() {
     api("/reports/me").then(setReport);
   }, []);
 
+  async function deleteData() {
+    if (confirm("Are you sure you want to delete all your answers?")) {
+      await api("/reports/me", { method: "DELETE" });
+      window.location.reload();
+    }
+  }
+
   if (!report) return <p>Loading…</p>;
   return (
     <div className="card">
@@ -26,6 +33,9 @@ export default function Report() {
       <ul>{report.risks.map((r) => <li key={r}>{r}</li>)}</ul>
       <h3>Next steps</h3>
       <ul>{report.next_steps.map((s) => <li key={s}>{s}</li>)}</ul>
+      <p style={{ marginTop: "24px" }}>
+        <button onClick={deleteData} style={{ background: "#b42318" }}>Delete my data</button>
+      </p>
     </div>
   );
 }

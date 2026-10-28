@@ -34,6 +34,7 @@ def get_questions(m: models.Membership = Depends(current_membership)):
 
 @router.post("/submit")
 def submit(body: SubmitIn, m: models.Membership = Depends(current_membership), db: Session = Depends(get_db)):
+    db.query(models.Response).filter_by(membership_id=m.id).delete()
     bank = {q["id"]: q for q in load_questions()}
     for a in body.answers:
         q = bank.get(a.question_id)
