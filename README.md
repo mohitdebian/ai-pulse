@@ -100,6 +100,6 @@ python -m pytest
 ### 4. How I used AI tools and where they got it wrong
 
 * **How I used AI:** I used an AI tool as a quick sounding board to look through the project structure, check FastAPI syntax, and brainstorm edge cases.
-* **Where it got it wrong:** When I looked at the prompt in `llm.py`, the prompt says `Return JSON: {"score": <1-5>}`. The AI told me that because the prompt specifies JSON, the model output would always be valid JSON and didn't need extra cleanup. But looking at `mock_ai_responses.json`, real models still return markdown blocks like ```` ```json ```` and string words like `"four"`. Relying only on prompt instructions was wrong, so I added manual cleanup in `scoring.py` to prevent crashes.
+* **Where it got it wrong:** The AI said the prompt was enough to guarantee clean JSON, but in reality LLMs return markdown fences or words instead of numbers, which would crash `json.loads`. So I wrote manual cleanup and clamping in `scoring.py` to keep the backend safe.
 
 
