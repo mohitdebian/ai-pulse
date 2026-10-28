@@ -5,6 +5,7 @@ from ..db import get_db
 from .. import models
 from ..auth import current_membership
 from ..utils import maturity_level
+from ..services.questions import load_questions
 
 router = APIRouter(prefix="/reports", tags=["reports"])
 
@@ -22,6 +23,19 @@ def my_report(m: models.Membership = Depends(current_membership), db: Session = 
     scores = [r.score for r in rows if r.score is not None]
     avg = sum(scores) / len(scores) if scores else None
     flags = sorted({f for r in rows for f in (r.flags or [])})
+
+    q_bank = {q["id"]: q["text"] for q in load_questions()}
+    breakdown = [
+        {
+            "question_id": r.question_id,
+            "question": q_bank.get(r.question_id, r.question_id),
+            "answer": r.answer,
+            "score": r.score,
+            "reason": r.reason,
+        }
+        for r in rows
+    ]
+
     return {
         "name": m.user.name,
         "organization": m.org.name,
@@ -30,4 +44,5 @@ def my_report(m: models.Membership = Depends(current_membership), db: Session = 
         "level": maturity_level(avg),
         "risks": flags,
         "next_steps": NEXT_STEPS.get(m.job_role, NEXT_STEPS["manager"]),
+        "breakdown": breakdown,
     }

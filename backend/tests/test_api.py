@@ -27,3 +27,16 @@ def test_admin_cannot_see_other_org(client):
     # Asha belongs to northwind which is org 1, so org 2 must return 403 forbidden
     r = client.get("/dashboard?org_id=2", headers=headers)
     assert r.status_code == 403
+
+
+def test_report_includes_score_breakdown(client):
+    headers, _ = login(client, "priya@northwind.test", "Northwind Logistics")
+    r = client.get("/reports/me", headers=headers)
+    assert r.status_code == 200
+    data = r.json()
+    assert "breakdown" in data
+    assert len(data["breakdown"]) == 2
+    assert data["breakdown"][0]["question_id"] == "common-freq"
+    assert data["breakdown"][0]["score"] == 2.0
+    assert data["breakdown"][1]["reason"] == "Useful summary but shared customer data."
+
