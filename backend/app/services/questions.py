@@ -18,8 +18,7 @@ def questions_for(job_role: str, seniority: str):
     for q in load_questions():
         if q["roles"] != ["all"] and job_role not in q["roles"]:
             continue
-        # if seniority < q.get("min_seniority", "junior"):
-        if LEVELS.get(seniority, 1) < LEVELS.get(q.get("min_seniority", "junior"), 1):  # edited
+        if LEVELS.get(seniority, 1) < LEVELS.get(q.get("min_seniority", "junior"), 1):
             continue
         result.append(q)
     return result

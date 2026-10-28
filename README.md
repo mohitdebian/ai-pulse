@@ -99,6 +99,6 @@ python -m pytest
 
 ### 4. How AI tools were used, and one place they got it wrong
 
-* **How AI was used:** Used as a pair-programming partner to rapidly trace data flows across routes and identify edge cases in the test suite.
-* **Where AI got it wrong:** When asked to fix the department score calculation, AI initially suggested simply changing the denominator to `responded` while still summing the raw question points array. It completely missed the dimensional mismatch: because each employee answers multiple questions, summing raw points still produced inflated scores over 5.0. A human engineer had to spot the error and enforce the proper two-step average (averaging an employee's question points first, then averaging those respondent scores across the department).
+* **How AI was used:** Used as a research assistant and sounding board to review multi-tenancy authorization patterns (OWASP BOLA) and explore the legacy schema.
+* **Where AI got it wrong:** When discussing structured output reliability, an AI model suggested that prompt instructions alone (`Return JSON: {"score": <1-5>}`) were sufficient to enforce response formatting. In reality, LLMs regularly produce markdown fences, string representations, or out-of-bounds scores despite explicit system instructions. Rather than relying on prompt compliance, I implemented defensive backend parsing, markdown stripping, and score clamping in `scoring.py`.
 
